@@ -22,14 +22,37 @@ from nanotron.config import (
 )
 from nanotron.logging import human_format
 
-# model_config = LlamaConfig(
-#     # Config for a tiny model model with 1.62M parameters
+model_config = LlamaBitNetConfig(
+    # Config for a tiny 1.58bit model model with 6.7B (?) parameters
+    bos_token_id = 1,
+    eos_token_id = 2,
+    hidden_act = "silu",
+    hidden_size = 4096,
+    initializer_range = 0.02,
+    intermediate_size = 11008,
+    is_bitnet_config = True,  # We use this help differentiate models in yaml/python conversion
+    max_position_embeddings = 256, #2048
+    num_attention_heads = 32,
+    num_hidden_layers = 32,
+    num_key_value_heads = None,
+    pad_token_id = None,
+    pretraining_tp = 1,
+    rms_norm_eps = 1e-6,
+    rope_scaling = None,
+    tie_word_embeddings = False,
+    use_cache = True,
+    vocab_size = 32000
+)
+
+# model_config = LlamaBitNetConfig(
+#     # Config for a tiny 1.58bit model model with 16.4K (?) parameters
 #     bos_token_id=1,
 #     eos_token_id=2,
 #     hidden_act="silu",
 #     hidden_size=16,
 #     initializer_range=0.02,
 #     intermediate_size=64,
+#     is_bitnet_config=True,
 #     max_position_embeddings=256,
 #     num_attention_heads=4,
 #     num_hidden_layers=2,
@@ -41,27 +64,6 @@ from nanotron.logging import human_format
 #     use_cache=True,
 #     vocab_size=256,
 # )
-
-model_config = LlamaBitNetConfig(
-    # Config for a tiny 1.58bit model model with 1.62M parameters
-    bos_token_id=1,
-    eos_token_id=2,
-    hidden_act="silu",
-    hidden_size=16,
-    initializer_range=0.02,
-    intermediate_size=64,
-    is_bitnet_config=True,
-    max_position_embeddings=256,
-    num_attention_heads=4,
-    num_hidden_layers=2,
-    num_key_value_heads=4,
-    pretraining_tp=1,
-    rms_norm_eps=1e-05,
-    rope_scaling=None,
-    tie_word_embeddings=True,
-    use_cache=True,
-    vocab_size=256,
-)
 
 num_params = human_format(
     model_config.vocab_size * model_config.hidden_size * 2
@@ -96,14 +98,14 @@ optimizer = OptimizerArgs(
 
 parallelism = ParallelismArgs(
     dp=2,
-    pp=2,
-    tp=2,
+    pp=1,
+    tp=1,
     pp_engine="1f1b",
     tp_mode="REDUCE_SCATTER",
     tp_linear_async_communication=True,
 )
 
-tokens = TokensArgs(sequence_length=256, train_steps=15, micro_batch_size=2, batch_accumulation_per_replica=1)
+tokens = TokensArgs(sequence_length=256, train_steps=150, micro_batch_size=2, batch_accumulation_per_replica=1)
 
 data_stages = [
     DatasetStageArgs(

@@ -143,6 +143,10 @@ class DistributedTrainer:
         ########################################
         ## We start with setting up loggers and process groups
         ########################################
+        
+        #debug
+        print("device_count =", torch.cuda.device_count())
+        print("current device =", torch.cuda.current_device())
 
         # Initialise all process groups
         self.parallel_context = ParallelContext(

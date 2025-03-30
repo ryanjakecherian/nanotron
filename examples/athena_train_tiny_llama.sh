@@ -10,8 +10,8 @@
 #SBATCH --error=slurm-%j.err            # Error log file
 
 # Load necessary modules (if needed)
-module load cuda/11.8   # Adjust based on your environment
-module load python/3.9  # Adjust based on your environment
+module load cuda/12.4   # Adjust based on your environment
+module load python/3.11  # Adjust based on your environment
 
 # Activate virtual environment (if applicable)
 source ~/myenv/bin/activate
